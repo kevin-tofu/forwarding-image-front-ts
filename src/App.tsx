@@ -16,7 +16,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/succeeded" element={<DestinationResult to='/' comment='succeeded'/>} />
           <Route path="/failed" element={<DestinationResult to='/' comment='failed'/>} />
-          <Route path="/back" element={<Back />} />
           <Route path="*" element={<NoMatch />} />
         </Routes>
       </BrowserRouter>
