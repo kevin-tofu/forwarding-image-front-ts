@@ -4,17 +4,21 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Stack from 'react-bootstrap/Stack';
 
-import React, { useState, useRef, MouseEvent, FormEvent, BlockquoteHTMLAttributes } from "react";
-// import { useState } from "react"
+import React, { useState } from "react";
+// import React, { useRef, MouseEvent, FormEvent, BlockquoteHTMLAttributes } from "react";
+import { useNavigate } from "react-router-dom"
 import axios from "axios"
 
 interface ImagePosterParams {
   url_host: string,
   params: any,
-  timeout_ms: number
+  timeout_ms: number,
+  to_succeeded: string,
+  to_failed: string,
 }
 function ImagePoster(props: ImagePosterParams) {
   
+  const navigate = useNavigate()
   const [hasFile, set_hasFile] = useState<boolean>(false);
   const [imagefile, set_imagefile] = useState<string | Blob>(''); // File extends Blob
   const [PostProgress, setPostProgress] = React.useState<number>(0)
@@ -29,7 +33,6 @@ function ImagePoster(props: ImagePosterParams) {
     try {
       
       setPostProgress(0)
-
       const fd = new FormData();
       fd.append('file', imagefile)
       fd.append('email_to', 'fukouhei001@gmail.com')
@@ -45,9 +48,17 @@ function ImagePoster(props: ImagePosterParams) {
           },
           params: props.params
         }
-     const res = await axios.post(url_post, fd, config_post)
-     console.log(res.status)
-          
+      const res = await axios.post(url_post, fd, config_post)
+      console.log(res.status)
+      if (res.status === 200) {
+        await new Promise(resolve => setTimeout(resolve, 2500))
+        // console.log('navigate to ', props.to_succeeded)
+        navigate(props.to_succeeded);
+      } else {
+        await new Promise(resolve => setTimeout(resolve, 2500))
+        // console.log('navigate to ', props.to_failed)
+        navigate(props.to_failed);
+      }
     } catch (e) {
       console.log(e)
     } finally {
